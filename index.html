@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flip Clock - Timekeeping Reimagined</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 120px 0 80px;
+            text-align: center;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        /* Flip Clock Display */
+        .flip-clock {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+
+        .time-unit {
+            text-align: center;
+        }
+
+        .flip-card {
+            background: #000;
+            border-radius: 10px;
+            width: 80px;
+            height: 100px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: white;
+            font-family: 'Courier New', monospace;
+        }
+
+        .time-label {
+            color: white;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            opacity: 0.8;
+        }
+
+        /* Content Sections */
+        .content-section {
+            background: white;
+            margin: 40px 0;
+            padding: 60px 0;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #333;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .feature-card {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: #667eea;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .history-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: left;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+        }
+
+        .history-content h3 {
+            font-size: 1.8rem;
+            margin: 30px 0 15px;
+            color: #333;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            text-align: center;
+            padding: 40px 0;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+
+        .footer-section p, .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            line-height: 1.6;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .flip-card {
+                width: 60px;
+                height: 80px;
+            }
+
+            .flip-card-inner {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes flipIn {
+            from {
+                transform: rotateX(-90deg);
+            }
+            to {
+                transform: rotateX(0deg);
+            }
+        }
+
+        .flip-animation {
+            animation: flipIn 0.6s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="#" class="logo">⏰ FlipTime</a>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#history">History</a></li>
+                <li><a href="https://flipclock.io/" target="_blank">Flip Clock</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="container">
+            <h1>Experience Time with Style</h1>
+            <p>Discover the elegant world of flip clocks - where nostalgia meets modern design</p>
+            
+            <div class="flip-clock">
+                <div class="time-unit">
+                    <div class="flip-card">
+                        <div class="flip-card-inner" id="hours">00</div>
+                    </div>
+                    <div class="time-label">HOURS</div>
+                </div>
+                <div class="time-unit">
+                    <div class="flip-card">
+                        <div class="flip-card-inner" id="minutes">00</div>
+                    </div>
+                    <div class="time-label">MINUTES</div>
+                </div>
+                <div class="time-unit">
+                    <div class="flip-card">
+                        <div class="flip-card-inner" id="seconds">00</div>
+                    </div>
+                    <div class="time-label">SECONDS</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="content-section">
+        <div class="container">
+            <h2 class="section-title">Why Choose Flip Clocks?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Aesthetic Appeal</h3>
+                    <p>Flip clocks bring a unique retro charm to any space, combining functionality with stunning visual design that never goes out of style.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Instant Recognition</h3>
+                    <p>The large, clear digits and distinctive flipping motion make time reading effortless and satisfying, even from across the room.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔧</div>
+                    <h3>Reliable Mechanism</h3>
+                    <p>Built with precision engineering, flip clocks offer dependable timekeeping with minimal maintenance required.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🏠</div>
+                    <h3>Versatile Design</h3>
+                    <p>Perfect for offices, bedrooms, living rooms, or any space where you want to add a touch of vintage sophistication.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔇</div>
+                    <h3>Silent Operation</h3>
+                    <p>Modern flip clocks operate whisper-quiet, providing time display without disturbing your peace and concentration.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💡</div>
+                    <h3>Easy Visibility</h3>
+                    <p>High contrast displays and optimal viewing angles ensure you can read the time clearly in various lighting conditions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="history" class="content-section">
+        <div class="container">
+            <h2 class="section-title">The History of Flip Clocks</h2>
+            <div class="history-content">
+                <p>Flip clocks represent a fascinating chapter in the evolution of timekeeping devices, combining mechanical ingenuity with distinctive visual appeal that has captivated people for decades.</p>
+                
+                <h3>Origins and Early Development</h3>
+                <p>The concept of flip clocks emerged in the mid-20th century as engineers sought to create more visually striking alternatives to traditional analog clocks. The first successful flip clock designs appeared in the 1960s, utilizing a system of numbered cards or panels that would "flip" over to display the changing time.</p>
+                
+                <h3>The Golden Era</h3>
+                <p>The 1970s marked the golden era of flip clocks, when they became synonymous with modern design and technological progress. These clocks were featured prominently in offices, airports, and homes, representing the space-age optimism of the era. The distinctive "tick-flip" sound became an iconic audio signature of the period.</p>
+                
+                <h3>Technical Innovation</h3>
+                <p>Early flip clocks used mechanical systems with precisely calibrated gear trains to control the flipping mechanism. Each digit was mounted on a rotating drum or paddle system, with careful timing ensuring smooth transitions. The engineering required to synchronize multiple digits was remarkably sophisticated for its time.</p>
+                
+                <h3>Cultural Impact</h3>
+                <p>Beyond their practical function, flip clocks became cultural icons, appearing in movies, television shows, and advertisements as symbols of modernity and efficiency. Their distinctive appearance helped define the aesthetic of mid-century modern design.</p>
+                
+                <h3>Modern Revival</h3>
+                <p>Today, flip clocks have experienced a remarkable revival, with both vintage collectors and new manufacturers recognizing their enduring appeal. Modern versions combine the classic flip aesthetic with LED technology, smart features, and improved reliability, while maintaining the nostalgic charm that made them popular originally.</p>
+                
+                <p>The flip clock's journey from innovative timepiece to cultural icon demonstrates how good design transcends temporary trends, continuing to inspire and delight new generations of users.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About Flip Clocks</h3>
+                    <p>Celebrating the timeless elegance and mechanical beauty of flip clocks - where every second is a work of art.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Resources</h3>
+                    <p><a href="https://flipclock.io/" target="_blank">Visit Flip Clock</a></p>
+                    <p><a href="#">Collector's Guide</a></p>
+                    <p><a href="#">Maintenance Tips</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Connect</h3>
+                    <p>Join the community of flip clock enthusiasts and discover the beauty of mechanical timekeeping.</p>
+                </div>
+            </div>
+            <p>&copy; 2025 FlipTime. Designed with ❤️ for time enthusiasts.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Digital Clock Functionality
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+
+            const hoursElement = document.getElementById('hours');
+            const minutesElement = document.getElementById('minutes');
+            const secondsElement = document.getElementById('seconds');
+
+            // Add flip animation when time changes
+            if (hoursElement.textContent !== hours) {
+                hoursElement.parentElement.classList.add('flip-animation');
+                hoursElement.textContent = hours;
+                setTimeout(() => hoursElement.parentElement.classList.remove('flip-animation'), 600);
+            }
+
+            if (minutesElement.textContent !== minutes) {
+                minutesElement.parentElement.classList.add('flip-animation');
+                minutesElement.textContent = minutes;
+                setTimeout(() => minutesElement.parentElement.classList.remove('flip-animation'), 600);
+            }
+
+            if (secondsElement.textContent !== seconds) {
+                secondsElement.parentElement.classList.add('flip-animation');
+                secondsElement.textContent = seconds;
+                setTimeout(() => secondsElement.parentElement.classList.remove('flip-animation'), 600);
+            }
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Initialize clock
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // Add scroll effect to header
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(0, 0, 0, 0.9)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.1)';
+            }
+        });
+
+        // Add entrance animations for feature cards
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Initially hide feature cards for animation
+        document.querySelectorAll('.feature-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(50px)';
+            card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
